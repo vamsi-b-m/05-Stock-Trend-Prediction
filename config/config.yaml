@@ -1,3 +1,16 @@
 data_ingestion_config:
-  dataset_url: ""
-  file_path: ""
+  data_ingestion_dir: "data_ingestion"
+  ingestion_dataset_file_name: "ingested_data.csv"
+  stock_symbol: "TATAMOTORS.NS"
+
+data_preprocessing_config:
+  data_preprocessing_dir: "data_preprocessing"
+  preprocessing_dataset_file_name: "preprocessed_data.csv"
+
+data_processing_config:
+  data_processing_dir: "data_processing"
+  processing_dataset_file_name: "processed_data.csv"
+
+training_pipeline_config:
+  pipeline_name: "stock_trend_prediction"
+  artifact_dir: "artifact"

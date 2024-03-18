@@ -1,10 +1,12 @@
-import yfinance as yf
-import pandas as pd
+import os, sys
+from src.pipeline.pipeline import Pipeline
 
-stock_symbol = "TATAMOTORS.NS"
-stock_data = yf.Ticker(stock_symbol)
-live_data = stock_data.history(period='20y', interval='1d')
-df = pd.DataFrame(live_data)
 
-df.to_csv("TATAMOTORS.csv")
-print(live_data)
+def start_pipeline():
+    try:
+        pipeline = Pipeline()
+        pipeline.run_pipeline()
+    except Exception as e:
+        raise Exception(e, sys) from e
+
+start_pipeline()
