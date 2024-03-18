@@ -33,7 +33,7 @@ class DataIngestion:
         except Exception as e:
             raise Exception(e, sys) from e
         
-    def initiate_data_ingestion(self):
+    def initiate_data_ingestion(self) -> DataIngestionArtifact:
         try:
             ingested_data_file_path = self.get_stock_data()
             is_ingested = True

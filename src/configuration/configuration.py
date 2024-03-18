@@ -11,7 +11,7 @@ class Configuration:
         try:
             self.config_file_path = config_file_path
             self.config_info = read_yaml_file(self.config_file_path)
-            self.time_stamp = f"{datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}"
+            self.time_stamp = f"{datetime.now().strftime('%Y-%m-%-%H-%M-%S')}"
             self.training_pipeline_config = self.get_training_pipeline_config()
         except Exception as e:
             raise Exception(e, sys) from e
@@ -23,7 +23,7 @@ class Configuration:
             data_ingestion_artifact_dir = os.path.join(
                 artifact_dir,
                 self.time_stamp,
-                DATA_INGESTION_ARTIFACT_DIR_KEY
+                data_ingestion_config_info[DATA_INGESTION_ARTIFACT_DIR_KEY]
             )
             dataset_file_name = data_ingestion_config_info[DATA_INGESTION_DATASET_FILE_NAME_KEY]
             dataset_file_path = os.path.join(data_ingestion_artifact_dir, dataset_file_name)
@@ -44,7 +44,7 @@ class Configuration:
             data_preprocessing_artifact_dir = os.path.join(
                 artifact_dir,
                 self.time_stamp,
-                DATA_PREPROCESSING_ARTIFACT_DIR_KEY
+                data_preprocessing_config_info[DATA_PREPROCESSING_ARTIFACT_DIR_KEY]
             )
             preprocessing_data_file_name = data_preprocessing_config_info[DATA_PREPROCESSING_DATASET_FILE_NAME_KEY]
             preprocessing_data_file_path = os.path.join(data_preprocessing_artifact_dir, preprocessing_data_file_name)

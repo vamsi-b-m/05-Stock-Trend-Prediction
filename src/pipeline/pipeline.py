@@ -2,7 +2,8 @@ import os, sys
 
 from src.configuration.configuration import Configuration
 from src.components.data_ingestion import DataIngestion
-from src.entity.artifact_entity import DataIngestionArtifact
+from src.components.data_preprocessing import Data_Preprocessing
+from src.entity.artifact_entity import DataIngestionArtifact, DataPreprocessingArtifact
 
 class Pipeline:
 
@@ -21,9 +22,21 @@ class Pipeline:
             return data_ingestion_artifact
         except Exception as e:
             raise Exception(e, sys) from e
+    
+    def start_data_preprocessing(self, data_ingestion_artifact : DataIngestionArtifact) -> DataPreprocessingArtifact:
+        try:
+            data_preprocessing = Data_Preprocessing(
+                data_preprocessing_config=self.config.get_data_preprocessing_config(),
+                data_ingestion_artifact=data_ingestion_artifact
+            )
+            data_preprocessing_artifact = data_preprocessing.initiate_data_preprocessing()
+            return data_preprocessing_artifact
+        except Exception as e:
+            raise Exception(e, sys) from e
         
     def run_pipeline(self) -> None:
         try:
             data_ingestion_artifact = self.start_data_ingestion()
+            data_preprocessing_artifact = self.start_data_preprocessing(data_ingestion_artifact=data_ingestion_artifact)
         except Exception as e:
             raise Exception(e, sys) from e
