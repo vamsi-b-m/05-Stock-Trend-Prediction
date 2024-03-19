@@ -19,8 +19,8 @@ class DataIngestion:
         
     def get_stock_data(self):
         try:
-            stock_symbol = self.data_ingestion_config.stock_symbol
-            stock = yfinance.Ticker(stock_symbol)
+            self.stock_symbol = self.data_ingestion_config.stock_symbol
+            stock = yfinance.Ticker(self.stock_symbol)
             dataset = stock.history(period='10y', interval='1d')
             dataset = pd.DataFrame(dataset)
             file_path = self.data_ingestion_config.ingested_data_file_path
@@ -36,10 +36,12 @@ class DataIngestion:
     def initiate_data_ingestion(self) -> DataIngestionArtifact:
         try:
             ingested_data_file_path = self.get_stock_data()
+            stock_symbol = self.stock_symbol
             is_ingested = True
             message = "Data Ingestion Completed Successfully"
             data_ingestion_artifact = DataIngestionArtifact(
                 ingested_data_file_path=ingested_data_file_path,
+                stock_symbol = stock_symbol,
                 is_ingested = is_ingested,
                 message = message
             )

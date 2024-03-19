@@ -10,6 +10,11 @@ data_preprocessing_config:
 data_processing_config:
   data_processing_dir: "data_processing"
   processing_dataset_file_name: "processed_data.csv"
+  processing_data_moving_averages_dir: "moving_averages"
+  fifty_moving_avg_file: "fifty_moving_average.csv"
+  hundred_moving_avg_file: "hundred_moving_average.csv"
+  two_hundred_moving_avg_file: "two_hundred_moving_average.csv"
+  graphs_file_name: "graphs.png"
 
 training_pipeline_config:
   pipeline_name: "stock_trend_prediction"

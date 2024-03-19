@@ -11,7 +11,7 @@ class Configuration:
         try:
             self.config_file_path = config_file_path
             self.config_info = read_yaml_file(self.config_file_path)
-            self.time_stamp = f"{datetime.now().strftime('%Y-%m-%-%H-%M-%S')}"
+            self.time_stamp = f"{datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}"
             self.training_pipeline_config = self.get_training_pipeline_config()
         except Exception as e:
             raise Exception(e, sys) from e
@@ -58,7 +58,41 @@ class Configuration:
         
     def get_data_processing_config(self) -> DataProcessingConfig:
         try:
-            pass
+            artifact_dir = self.training_pipeline_config.artifact_dir
+            data_processing_config_info = self.config_info[DATA_PROCESSING_CONFIG_KEY]
+            data_processing_artifact_dir = os.path.join(
+                artifact_dir,
+                self.time_stamp,
+                data_processing_config_info[DATA_PROCESSING_ARTIFACT_DIR_KEY]
+            )
+            processing_data_file_name = data_processing_config_info[DATA_PROCESSING_DATASET_FILE_NAME_KEY]
+            processing_data_file_path = os.path.join(data_processing_artifact_dir, processing_data_file_name)
+
+            processing_moving_averages_dir_name = data_processing_config_info[DATA_PROCESSING_MOVING_AVERAGES_DIR_KEY]
+            processing_moving_averages_dir_path = os.path.join(data_processing_artifact_dir, processing_moving_averages_dir_name)
+
+            processing_fifty_moving_average_file_name = data_processing_config_info[DATA_PROCESSING_FIFTY_MOVING_AVERAGE_FILE_NAME_KEY]
+            processing_fifty_moving_average_file_path = os.path.join(processing_moving_averages_dir_path, processing_fifty_moving_average_file_name)
+
+            processing_hundred_moving_average_file_name = data_processing_config_info[DATA_PROCESSING_HUNDRED_MOVING_AVERAGE_FILE_NAME_KEY]
+            processing_hundred_moving_average_file_path = os.path.join(processing_moving_averages_dir_path, processing_hundred_moving_average_file_name)
+
+            processing_two_hundred_moving_average_file_name = data_processing_config_info[DATA_PROCESSING_TWO_HUNDRED_MOVING_AVERAGE_FILE_NAME_KEY]
+            processing_two_hundred_moving_average_file_path = os.path.join(processing_moving_averages_dir_path, processing_two_hundred_moving_average_file_name)   
+            
+            processing_graphs_file_name = data_processing_config_info[DATA_PROCESSING_GRAPHS_FILE_NAME_KEY]
+            processing_graphs_file_path = os.path.join(data_processing_artifact_dir, processing_graphs_file_name)
+
+            data_processing_config = DataProcessingConfig(
+                processing_data_file_path = processing_data_file_path,
+                processing_moving_averages_dir_path = processing_moving_averages_dir_path,
+                processing_fifty_moving_average_file_path = processing_fifty_moving_average_file_path,
+                processing_hundred_moving_average_file_path = processing_hundred_moving_average_file_path,
+                processing_two_hundred_moving_average_file_path = processing_two_hundred_moving_average_file_path,
+                processing_graphs_file_path = processing_graphs_file_path
+            )
+            return data_processing_config
+        
         except Exception as e:
             raise Exception(e, sys) from e     
               
