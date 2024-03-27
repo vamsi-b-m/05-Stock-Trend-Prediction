@@ -16,6 +16,12 @@ data_processing_config:
   two_hundred_moving_avg_file: "two_hundred_moving_average.csv"
   graphs_file_name: "graphs.png"
 
+model_training_config:
+  model_train_data_file_name: "train_data.csv"
+  model_test_data_file_name: "test_data.csv"
+  model_file_name: "model.h5"
+  
+
 training_pipeline_config:
   pipeline_name: "stock_trend_prediction"
   artifact_dir: "artifact"

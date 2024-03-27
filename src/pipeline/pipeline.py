@@ -4,7 +4,8 @@ from src.configuration.configuration import Configuration
 from src.components.data_ingestion import DataIngestion
 from src.components.data_preprocessing import Data_Preprocessing
 from src.components.data_processing import DataProcessing
-from src.entity.artifact_entity import DataIngestionArtifact, DataPreprocessingArtifact, DataProcessingArtifact
+from src.components.model_training import ModelTraining
+from src.entity.artifact_entity import DataIngestionArtifact, DataPreprocessingArtifact, DataProcessingArtifact, ModelTrainingArtifact
 
 class Pipeline:
 
@@ -31,7 +32,6 @@ class Pipeline:
                 data_ingestion_artifact=data_ingestion_artifact
             )
             data_preprocessing_artifact = data_preprocessing.initiate_data_preprocessing()
-            print(data_preprocessing_artifact)
             return data_preprocessing_artifact
         except Exception as e:
             raise Exception(e, sys) from e
@@ -48,10 +48,22 @@ class Pipeline:
         except Exception as e:
             raise Exception(e, sys) from e
         
+    def start_model_training(self, data_processing_artifact:DataPreprocessingArtifact) -> ModelTrainingArtifact:
+        try:
+            model_training = ModelTraining(
+                model_training_config=self.config.get_model_training_config(),
+                data_processing_artifact=data_processing_artifact
+            )
+            model_training_artifact = model_training.initiate_model_training()
+            return model_training_artifact
+        except Exception as e:
+            raise Exception(e, sys) from e
+        
     def run_pipeline(self) -> None:
         try:
             data_ingestion_artifact = self.start_data_ingestion()
             data_preprocessing_artifact = self.start_data_preprocessing(data_ingestion_artifact=data_ingestion_artifact)
             data_processing_artifact = self.start_data_processing(data_ingestion_artifact=data_ingestion_artifact, data_preprocessing_artifact=data_preprocessing_artifact)
+            model_training_artifact = self.start_model_training(data_processing_artifact=data_processing_artifact)
         except Exception as e:
             raise Exception(e, sys) from e

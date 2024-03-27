@@ -3,7 +3,7 @@ from datetime import datetime
 
 from src.constants import *
 from src.utils import *
-from src.entity.config_entity import DataIngestionConfig, DataPreprocessingConfig, DataProcessingConfig, TrainingPipelineConfig
+from src.entity.config_entity import DataIngestionConfig, DataPreprocessingConfig, DataProcessingConfig, ModelTrainingConfig, TrainingPipelineConfig
 
 class Configuration:
     
@@ -94,13 +94,40 @@ class Configuration:
             return data_processing_config
         
         except Exception as e:
-            raise Exception(e, sys) from e     
+            raise Exception(e, sys) from e
+
+    def get_model_training_config(self) -> ModelTrainingConfig:
+        try:
+            model_training_config_info = self.config_info[MODEL_TRAINING_CONFIG_KEY]
+            model_data_dir = self.training_pipeline_config.model_data_dir
+            
+            model_train_data_file_name = model_training_config_info[MODEL_TRAINING_TRAIN_DATA_FILE_NAME_KEY]
+            model_train_data_file_path = os.path.join(model_data_dir, model_train_data_file_name)
+
+            model_test_data_file_name = model_training_config_info[MODEL_TRAINING_TEST_DATA_FILE_NAME_KEY]
+            model_test_data_file_path = os.path.join(model_data_dir, model_test_data_file_name)
+
+            model_file_name = model_training_config_info[MODEL_TRAINING_MODEL_FILE_NAME_KEY]
+            model_file_path = os.path.join(model_data_dir, model_file_name)
+
+            model_training_config = ModelTrainingConfig(
+                model_data_dir = model_data_dir,
+                model_train_data_file_path=model_train_data_file_path,
+                model_test_data_file_path=model_test_data_file_path,
+                model_file_path=model_file_path
+            )
+
+            return model_training_config
+
+        except Exception as e:
+            raise Exception(e, sys) from e    
               
     def get_training_pipeline_config(self) -> TrainingPipelineConfig:
         try:
             training_pipeline_config = self.config_info[TRAINING_PIPELINE_CONFIG_KEY]
             artifact_dir = os.path.join(ROOT_DIR , DATA_DIR, training_pipeline_config[TRAINING_PIPELINE_ARTIFACT_DIR_KEY])
-            training_pipeline_config = TrainingPipelineConfig(artifact_dir=artifact_dir)
+            model_data_dir = os.path.join(ROOT_DIR, MODEL_DIR, DATA_DIR)
+            training_pipeline_config = TrainingPipelineConfig(artifact_dir=artifact_dir, model_data_dir=model_data_dir)
             return training_pipeline_config
         except Exception as e:
             raise Exception(e, sys) from e
