@@ -1,4 +1,5 @@
 import os, sys
+import logging
 
 import pandas as pd
 import numpy as np
@@ -7,6 +8,8 @@ from src.utils import *
 from src.entity.config_entity import ModelTrainingConfig
 from src.entity.artifact_entity import DataProcessingArtifact, ModelTrainingArtifact
 
+from sklearn.preprocessing import MinMaxScaler
+import matplotlib.pyplot as plt
 
 class ModelTraining:
 
@@ -39,11 +42,8 @@ class ModelTraining:
 
     def feature_scaling(self):
         try:
-            from sklearn.preprocessing import MinMaxScaler
-
-            scaler = MinMaxScaler(feature_range=(0,1))
-
-            self.data_train_arr = scaler.fit_transform(self.train_dataset)
+            self.train_scaler = MinMaxScaler(feature_range=(0,1))
+            self.data_train_arr = self.train_scaler.fit_transform(self.train_dataset)
 
             self.x_train = []
             self.y_train = []
@@ -59,47 +59,99 @@ class ModelTraining:
 
     def train_model(self):
         try:
+            self.model_file_path = self.model_training_config.model_file_path
 
-            model_file_path = self.model_training_config.model_file_path
+            if not os.path.exists(self.model_file_path):
 
-            if not os.path.exists(model_file_path):
                 from keras.layers import Dense, Dropout, LSTM
                 from keras.models import Sequential
 
-                model = Sequential()
+
+                self.model = Sequential()
 
                 # Layer 1
-                model.add(LSTM(units=50, activation='relu', return_sequences=True, input_shape=(self.x_train.shape[1],1)))
-                model.add(Dropout(0.2))
+                self.model.add(LSTM(units=50, activation='relu', return_sequences=True, input_shape=(self.x_train.shape[1],1)))
+                self.model.add(Dropout(0.2))
 
                 # Layer 2
-                model.add(LSTM(units=60, activation='relu', return_sequences=True))
-                model.add(Dropout(0.3))
+                self.model.add(LSTM(units=60, activation='relu', return_sequences=True))
+                self.model.add(Dropout(0.3))
 
                 # Layer 3
-                model.add(LSTM(units=80, activation='relu', return_sequences=True))
-                model.add(Dropout(0.4))
+                self.model.add(LSTM(units=80, activation='relu', return_sequences=True))
+                self.model.add(Dropout(0.4))
 
                 # Layer 4
-                model.add(LSTM(units=120, activation='relu'))
-                model.add(Dropout(0.5))
+                self.model.add(LSTM(units=120, activation='relu'))
+                self.model.add(Dropout(0.5))
 
                 # Layer 5
-                model.add(Dense(units=1))
+                self.model.add(Dense(units=1))
 
                 # Summary Generation
-                model_summary = model.summary()
+                model_summary = self.model.summary()
 
                 print(model_summary)
 
-                model.compile(optimizer="adam", loss='mean_squared_error')
-                model.fit(self.x_train, self.y_train, epochs=50)
+                self.model.compile(optimizer="adam", loss='mean_squared_error')
+                self.model.fit(self.x_train, self.y_train, epochs=50)
 
-                model.save(model_file_path)
-
-                return model_file_path
+                self.model.save(self.model_file_path)
+                print(self.model_file_path)
             else:
-                pass
+                print(self.model_file_path)
+
+        except Exception as e:
+            raise Exception(e, sys) from e
+        
+    def prediction(self):
+        try:
+            from keras.models import load_model
+
+            # Load the trained model
+            self.model = load_model(self.model_file_path)
+            
+            # Get the last 100 days data from the train data
+            past_100_days = self.train_dataset.tail(100)
+
+            # Combine past_100_days with test_dataset
+            final_dataframe = pd.concat([past_100_days, self.test_dataset], ignore_index=True)
+
+            self.test_pred_scaler = MinMaxScaler(feature_range=(0,1))
+            self.input_data = self.test_pred_scaler.fit_transform(final_dataframe)
+
+            self.x_test = []
+            self.y_test = []
+
+            for i in range(100, self.input_data.shape[0]):
+                self.x_test.append(self.input_data[i-100:i])
+                self.y_test.append(self.input_data[i, 0])
+
+            self.x_test, self.y_test = np.array(self.x_test), np.array(self.y_test)
+
+            # Reshape y_test to a 2D array
+            self.y_test = self.y_test.reshape(-1, 1)
+            self.y_test = self.test_pred_scaler.inverse_transform(self.y_test)
+
+            # Making Predictions
+            self.y_predicted = self.model.predict(self.x_test)
+            self.y_predicted = self.test_pred_scaler.inverse_transform(self.y_predicted)
+
+            graph_data = pd.DataFrame()
+            graph_data['Test'] = pd.DataFrame(self.y_test)
+            graph_data['Pred'] = pd.DataFrame(self.y_predicted)
+
+            # Plotting the first graph
+            plt.figure(figsize=(15, 8))
+            self.y_train = self.y_train.reshape(-1, 1)
+            self.y_train = self.train_scaler.inverse_transform(self.y_train)
+            self.y_train = np.append(self.y_train, np.array(self.train_dataset[-100:]))
+            start_index = len(self.y_train)
+            plt.plot(self.y_train, 'b')
+            # Plotting the second graph with adjusted x-axis range
+            plt.plot(range(start_index, start_index + len(graph_data)), graph_data[['Test', 'Pred']])
+            plt.legend()
+            plt.savefig("/Users/vb/Desktop/Projects/Machine-Learning/05-Stock-Trend-Prediction/final_graph_1.png")
 
         except Exception as e:
             raise Exception(e, sys) from e
@@ -111,6 +163,7 @@ class ModelTraining:
             train_data_file_path, test_data_file_path = self.train_test_split()
             self.feature_scaling()
             model_file_path = self.train_model()
+            self.prediction()
 
             model_training_artifact = ModelTrainingArtifact(
                 train_data_file_path = train_data_file_path,

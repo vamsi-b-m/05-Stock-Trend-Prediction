@@ -35,6 +35,7 @@ DATA_PROCESSING_GRAPHS_FILE_NAME_KEY = "graphs_file_name"
 
 # Model Training Related Constants
 MODEL_TRAINING_CONFIG_KEY = "model_training_config"
+MODEL_TRAINING_DATA_DIR = "model_data_dir"
 MODEL_TRAINING_TRAIN_DATA_FILE_NAME_KEY = "model_train_data_file_name"
 MODEL_TRAINING_TEST_DATA_FILE_NAME_KEY = "model_test_data_file_name"
 MODEL_TRAINING_MODEL_FILE_NAME_KEY = "model_file_name"

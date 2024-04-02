@@ -98,8 +98,15 @@ class Configuration:
 
     def get_model_training_config(self) -> ModelTrainingConfig:
         try:
+            artifact_dir = self.training_pipeline_config.artifact_dir
+
             model_training_config_info = self.config_info[MODEL_TRAINING_CONFIG_KEY]
-            model_data_dir = self.training_pipeline_config.model_data_dir
+            #model_data_dir = self.training_pipeline_config.model_data_dir
+            model_data_dir = os.path.join(
+                artifact_dir,
+                model_training_config_info[MODEL_TRAINING_DATA_DIR],
+                self.time_stamp
+            )
             
             model_train_data_file_name = model_training_config_info[MODEL_TRAINING_TRAIN_DATA_FILE_NAME_KEY]
             model_train_data_file_path = os.path.join(model_data_dir, model_train_data_file_name)
@@ -108,7 +115,11 @@ class Configuration:
             model_test_data_file_path = os.path.join(model_data_dir, model_test_data_file_name)
 
             model_file_name = model_training_config_info[MODEL_TRAINING_MODEL_FILE_NAME_KEY]
-            model_file_path = os.path.join(model_data_dir, model_file_name)
+            model_file_path = os.path.join(
+                artifact_dir,
+                model_training_config_info[MODEL_TRAINING_DATA_DIR],
+                model_file_name
+            )
 
             model_training_config = ModelTrainingConfig(
                 model_data_dir = model_data_dir,
