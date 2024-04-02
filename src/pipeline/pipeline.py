@@ -5,7 +5,8 @@ from src.components.data_ingestion import DataIngestion
 from src.components.data_preprocessing import Data_Preprocessing
 from src.components.data_processing import DataProcessing
 from src.components.model_training import ModelTraining
-from src.entity.artifact_entity import DataIngestionArtifact, DataPreprocessingArtifact, DataProcessingArtifact, ModelTrainingArtifact
+from src.components.model_prediction import ModelPrediction
+from src.entity.artifact_entity import DataIngestionArtifact, DataPreprocessingArtifact, DataProcessingArtifact, ModelTrainingArtifact, ModelPredictionArtifact
 
 class Pipeline:
 
@@ -58,6 +59,17 @@ class Pipeline:
             return model_training_artifact
         except Exception as e:
             raise Exception(e, sys) from e
+    
+    def start_model_prediction(self, model_training_artifact: ModelTrainingArtifact) -> ModelPredictionArtifact:
+        try:
+            model_prediction = ModelPrediction(
+                model_prediction_config=self.config.get_model_prediction_config(),
+                model_training_artifact=model_training_artifact
+            )
+            model_prediction_artifact = model_prediction.initiate_model_prediction()
+            return model_prediction_artifact
+        except Exception as e:
+            raise Exception(e, sys) from e
         
     def run_pipeline(self) -> None:
         try:
@@ -65,5 +77,6 @@ class Pipeline:
             data_preprocessing_artifact = self.start_data_preprocessing(data_ingestion_artifact=data_ingestion_artifact)
             data_processing_artifact = self.start_data_processing(data_ingestion_artifact=data_ingestion_artifact, data_preprocessing_artifact=data_preprocessing_artifact)
             model_training_artifact = self.start_model_training(data_processing_artifact=data_processing_artifact)
+            model_prediction_artifact = self.start_model_prediction(model_training_artifact=model_training_artifact)
         except Exception as e:
             raise Exception(e, sys) from e

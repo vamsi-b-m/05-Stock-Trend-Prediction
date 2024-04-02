@@ -23,11 +23,11 @@ class ModelTraining:
     def train_test_split(self):
         try:
             # Dividing the dataset into Train and Test
-            self.train_dataset = pd.DataFrame(self.dataset['Close'][0:int(len(self.dataset)*0.70)])
-            self.test_dataset = pd.DataFrame(self.dataset['Close'][int(len(self.dataset)*0.70):int(len(self.dataset))])
+            self.train_dataset = pd.DataFrame({'Date': self.dataset['Date'], 'Close': self.dataset['Close']}).iloc[:int(len(self.dataset)*0.70)]
+            self.test_dataset = pd.DataFrame({'Date': self.dataset['Date'], 'Close': self.dataset['Close']}).iloc[int(len(self.dataset)*0.70):int(len(self.dataset))]
 
-            model_data_dir = self.model_training_config.model_data_dir
-            os.makedirs(model_data_dir, exist_ok=True)
+            model_training_data_dir_path = self.model_training_config.model_training_data_dir_path
+            os.makedirs(model_training_data_dir_path, exist_ok=True)
 
             train_data_file_path = self.model_training_config.model_train_data_file_path
             test_data_file_path = self.model_training_config.model_test_data_file_path
@@ -43,7 +43,7 @@ class ModelTraining:
     def feature_scaling(self):
         try:
             self.train_scaler = MinMaxScaler(feature_range=(0,1))
-            self.data_train_arr = self.train_scaler.fit_transform(self.train_dataset)
+            self.data_train_arr = self.train_scaler.fit_transform(pd.DataFrame(self.train_dataset['Close']))
 
             self.x_train = []
             self.y_train = []
@@ -104,71 +104,23 @@ class ModelTraining:
         except Exception as e:
             raise Exception(e, sys) from e
         
-    def prediction(self):
-        try:
-            from keras.models import load_model
-
-            # Load the trained model
-            self.model = load_model(self.model_file_path)
-            
-            # Get the last 100 days data from the train data
-            past_100_days = self.train_dataset.tail(100)
-
-            # Combine past_100_days with test_dataset
-            final_dataframe = pd.concat([past_100_days, self.test_dataset], ignore_index=True)
-
-            self.test_pred_scaler = MinMaxScaler(feature_range=(0,1))
-            self.input_data = self.test_pred_scaler.fit_transform(final_dataframe)
-
-            self.x_test = []
-            self.y_test = []
-
-            for i in range(100, self.input_data.shape[0]):
-                self.x_test.append(self.input_data[i-100:i])
-                self.y_test.append(self.input_data[i, 0])
-
-            self.x_test, self.y_test = np.array(self.x_test), np.array(self.y_test)
-
-            # Reshape y_test to a 2D array
-            self.y_test = self.y_test.reshape(-1, 1)
-            self.y_test = self.test_pred_scaler.inverse_transform(self.y_test)
-
-            # Making Predictions
-            self.y_predicted = self.model.predict(self.x_test)
-            self.y_predicted = self.test_pred_scaler.inverse_transform(self.y_predicted)
-
-            graph_data = pd.DataFrame()
-            graph_data['Test'] = pd.DataFrame(self.y_test)
-            graph_data['Pred'] = pd.DataFrame(self.y_predicted)
-
-            # Plotting the first graph
-            plt.figure(figsize=(15, 8))
-            self.y_train = self.y_train.reshape(-1, 1)
-            self.y_train = self.train_scaler.inverse_transform(self.y_train)
-            self.y_train = np.append(self.y_train, np.array(self.train_dataset[-100:]))
-            start_index = len(self.y_train)
-            plt.plot(self.y_train, 'b')
-            # Plotting the second graph with adjusted x-axis range
-            plt.plot(range(start_index, start_index + len(graph_data)), graph_data[['Test', 'Pred']])
-            plt.legend()
-            plt.savefig("/Users/vb/Desktop/Projects/Machine-Learning/05-Stock-Trend-Prediction/final_graph_1.png")
-
-        except Exception as e:
-            raise Exception(e, sys) from e
-        
     def get_model_training_config(self):
         try:
             processed_data_file_path = self.data_processing_artifact.processed_data_file_path
             self.dataset = read_csv_file(file_path=processed_data_file_path)
             train_data_file_path, test_data_file_path = self.train_test_split()
             self.feature_scaling()
-            model_file_path = self.train_model()
-            self.prediction()
+            self.train_model()
 
             model_training_artifact = ModelTrainingArtifact(
+                processed_data_file_path = processed_data_file_path,
                 train_data_file_path = train_data_file_path,
                 test_data_file_path = test_data_file_path,
-                model_file_path = model_file_path
+                model_file_path = self.model_file_path,
+                train_scaler = self.train_scaler,
+                y_train = self.y_train,
+                is_trained="True",
+                message="Model Training Completed"
             )
             return model_training_artifact
         except Exception as e:

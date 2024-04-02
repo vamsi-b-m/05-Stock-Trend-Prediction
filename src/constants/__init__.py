@@ -4,7 +4,7 @@ ROOT_DIR = os.getcwd()
 DATA_DIR = "data"
 CONFIG_DIR = "config"
 CONFIG_FILE_NAME = "config.yaml"
-MODEL_DIR = "model"
+MODEL_DATA_DIR_KEY = "model_data_dir"
 CONFIG_FILE_PATH = os.path.join(ROOT_DIR, CONFIG_DIR, CONFIG_FILE_NAME)
 
 # Training pipeline related varibales
@@ -31,11 +31,23 @@ DATA_PROCESSING_MOVING_AVERAGES_DIR_KEY = "processing_data_moving_averages_dir"
 DATA_PROCESSING_FIFTY_MOVING_AVERAGE_FILE_NAME_KEY = "fifty_moving_avg_file"
 DATA_PROCESSING_HUNDRED_MOVING_AVERAGE_FILE_NAME_KEY = "hundred_moving_avg_file"
 DATA_PROCESSING_TWO_HUNDRED_MOVING_AVERAGE_FILE_NAME_KEY = "two_hundred_moving_avg_file"
-DATA_PROCESSING_GRAPHS_FILE_NAME_KEY = "graphs_file_name"
+# Graph Related Constants
+DATA_PROCESSING_GRAPHS_DATA_DIR_KEY = "data_processing_graphs_dir"
+DATA_PROCESSING_CLOSE_PRICE_GRAPH_FILE_NAME_KEY = "close_price_graph_file_name"
+DATA_PROCESSING_50_MA_GRAPH_FILE_NAME_KEY = "50ma_graph_file_name"
+DATA_PROCESSING_100_MA_GRAPH_FILE_NAME_KEY = "100ma_graph_file_name"
+DATA_PROCESSING_200_MA_GRAPH_FILE_NAME_KEY = "200ma_graph_file_name"
+DATA_PROCESSING_50_100_200_MA_COMP_GRAPH_FILE_NAME_KEY = "close_50_100_200_ma_comp_graph_file_name"
 
 # Model Training Related Constants
 MODEL_TRAINING_CONFIG_KEY = "model_training_config"
-MODEL_TRAINING_DATA_DIR = "model_data_dir"
+MODEL_TRAINING_DATA_DIR_KEY = "model_training_data_dir"
 MODEL_TRAINING_TRAIN_DATA_FILE_NAME_KEY = "model_train_data_file_name"
 MODEL_TRAINING_TEST_DATA_FILE_NAME_KEY = "model_test_data_file_name"
 MODEL_TRAINING_MODEL_FILE_NAME_KEY = "model_file_name"
+
+# Model Prediction Related Constants
+MODEL_PREDICTION_CONFIG_KEY = "model_prediction_config"
+MODEL_PREDICTION_DATA_DIR_KEY = "model_prediction_data_dir"
+MODEL_PREDICTION_GRAPHS_DATA_DIR__NAME_KEY = "model_prediction_graphs_dir"
+MODEL_PREDICTION_PREDICTED_GRAPH_FILE_NAME_KEY = "model_prediction_predicted_graph_file_name"
