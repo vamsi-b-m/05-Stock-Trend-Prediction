@@ -13,7 +13,7 @@
             justify-content: center;
             align-items: center;
             height: 200vh;
-            background-color: cadetblue;
+            background-color: rgba(31, 35, 48, 0.637);
         }
         .container {
             text-align: center;
@@ -42,7 +42,7 @@
                 <option value="{{ stock }}">{{ stock }}</option>
                 {% endfor %}
             </select>
-            <input type="submit" value="Submit">
+            <input type="submit" value="Submit"><br><br>
         </form>        
         <!-- Display the graphs -->
         <iframe src="../static/close_price.html" frameborder="0"></iframe>

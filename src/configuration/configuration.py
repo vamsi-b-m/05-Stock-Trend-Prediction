@@ -1,4 +1,6 @@
 import os, sys
+import logging
+
 from datetime import datetime
 
 from src.constants import *
@@ -9,6 +11,9 @@ class Configuration:
     
     def __init__(self, config_file_path:str=CONFIG_FILE_PATH) -> None:
         try:
+            self.logger = logging.getLogger(__name__)
+            logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
+            self.logger.info(f"Fetching the configuration Data from {config_file_path}")
             self.config_file_path = config_file_path
             self.config_info = read_yaml_file(self.config_file_path)
             self.time_stamp = f"{datetime.now().strftime('%Y-%m-%d-%H-%M-%S')}"
@@ -149,7 +154,6 @@ class Configuration:
                 model_test_data_file_path=model_test_data_file_path,
                 model_file_path=model_file_path
             )
-
             return model_training_config
 
         except Exception as e:
@@ -175,7 +179,6 @@ class Configuration:
             model_prediction_config = ModelPredictionConfig(
                 model_prediction_predicted_graph_file_path = model_prediction_predicted_graph_file_path
             )
-
             return model_prediction_config
         
         except Exception as e:

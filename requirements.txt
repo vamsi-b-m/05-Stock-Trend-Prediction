@@ -57,6 +57,7 @@ multitasking==0.0.11
 namex==0.0.7
 nbformat==5.10.3
 nest-asyncio==1.6.0
+niftystocks==0.1.2
 numpy==1.26.4
 oauthlib==3.2.2
 opt-einsum==3.3.0
@@ -96,9 +97,6 @@ tenacity==8.2.3
 tensorboard==2.15.2
 tensorboard-data-server==0.7.2
 tensorflow==2.15.0
-tensorflow-estimator==2.15.0
-tensorflow-io-gcs-filesystem==0.36.0
-tensorflow-macos==2.15.0
 termcolor==2.4.0
 threadpoolctl==3.3.0
 tornado==6.4
