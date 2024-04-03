@@ -6,7 +6,7 @@ import numpy as np
 
 from src.utils import *
 from src.entity.config_entity import ModelPredictionConfig
-from src.entity.artifact_entity import ModelTrainingArtifact, ModelPredictionArtifact
+from src.entity.artifact_entity import DataIngestionArtifact, ModelTrainingArtifact, ModelPredictionArtifact
 
 from sklearn.preprocessing import MinMaxScaler
 import plotly.graph_objects as go
@@ -14,8 +14,9 @@ import plotly.graph_objects as go
 
 class ModelPrediction:
     
-    def __init__(self, model_training_artifact: ModelTrainingArtifact, model_prediction_config: ModelPredictionConfig) -> None:
+    def __init__(self, data_ingestion_artifact:DataIngestionArtifact, model_training_artifact: ModelTrainingArtifact, model_prediction_config: ModelPredictionConfig) -> None:
         try:
+            self.data_ingestion_artifact = data_ingestion_artifact
             self.model_prediction_config = model_prediction_config
             self.model_training_artifact = model_training_artifact
         except Exception as e:
@@ -74,8 +75,9 @@ class ModelPrediction:
     
     def generate_graphs(self):
         try:
+            stock_name = self.data_ingestion_artifact.stock_symbol[:-3]
             self.model_prediction_predicted_graph_file_path = self.model_prediction_config.model_prediction_predicted_graph_file_path
-            os.makedirs(os.path.dirname(self.model_prediction_predicted_graph_file_path))
+            os.makedirs(os.path.dirname(self.model_prediction_predicted_graph_file_path), exist_ok=True)
             self.train_scaler = self.model_training_artifact.train_scaler
             self.y_train = self.model_training_artifact.y_train
 
@@ -83,23 +85,41 @@ class ModelPrediction:
             graph_data['Test'] = pd.DataFrame(self.y_test)
             graph_data['Pred'] = pd.DataFrame(self.y_predicted)
             
-            # Plotting the first graph
             final_y_train = self.y_train.reshape(-1,1)
             final_y_train = np.append(np.array(self.train_dataset['Close'][:100]), self.train_scaler.inverse_transform(final_y_train))
 
             train_dates = pd.to_datetime(self.dataset['Date'][:len(final_y_train)])
             test_pred_dates = pd.to_datetime(self.dataset['Date'][len(final_y_train):])
 
-            # Plotting the first graph
             fig = go.Figure()
 
+            # Plotting the first graph
             fig.add_trace(go.Scatter(x=train_dates, y=final_y_train, mode='lines', name='Training Data'))
             # Plotting the second graph with adjusted x-axis range
             fig.add_trace(go.Scatter(x=test_pred_dates, y=graph_data['Test'], mode='lines', name='Test Data'))
             fig.add_trace(go.Scatter(x=test_pred_dates, y=graph_data['Pred'], mode='lines', name='Predicted Data'))
 
             # Update layout
-            fig.update_layout(title='TATASTEEL', xaxis_title='Date', yaxis_title='Price (INR)', height=600, width=1350)  # Adjust height and width as needed
+            fig.update_layout(
+                title=f"{stock_name}",
+                xaxis_title='Date',
+                yaxis_title='Price (INR)',
+                height=600,
+                width=1350,
+                legend=dict(
+                    x=0.02,
+                    y=0.98,
+                    traceorder="normal",
+                    font=dict(
+                        family="sans-serif",
+                        size=12,
+                        color="black"
+                    ),
+                    bgcolor="LightSteelBlue",
+                    bordercolor="Black",
+                    borderwidth=2
+                )
+            )
             # Customizing hover information to show full date and price
             fig.update_traces(hovertemplate='Date: %{x|%Y-%m-%d}<br>Price: %{y}')
 

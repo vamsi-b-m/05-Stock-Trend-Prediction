@@ -9,8 +9,9 @@ from src.entity.artifact_entity import DataIngestionArtifact
 
 class DataIngestion:
     
-    def __init__(self, data_ingestion_config=DataIngestionConfig) -> None:
+    def __init__(self, stock_symbol, data_ingestion_config=DataIngestionConfig) -> None:
         try:
+            self.stock_symbol = stock_symbol
             self.data_ingestion_config = data_ingestion_config
             self.logger = logging.getLogger(__name__)
             logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
@@ -19,7 +20,7 @@ class DataIngestion:
         
     def get_stock_data(self):
         try:
-            self.stock_symbol = self.data_ingestion_config.stock_symbol
+            #self.stock_symbol = self.data_ingestion_config.stock_symbol
             stock = yfinance.Ticker(self.stock_symbol)
             dataset = stock.history(period='10y', interval='1d')
             dataset = pd.DataFrame(dataset)

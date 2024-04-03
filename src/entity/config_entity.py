@@ -1,6 +1,6 @@
 from collections import namedtuple
 
-DataIngestionConfig = namedtuple("DataIngestionConfig", ["ingested_data_file_path", "stock_symbol"])
+DataIngestionConfig = namedtuple("DataIngestionConfig", ["ingested_data_file_path"])
 DataPreprocessingConfig = namedtuple("DataPreprocessingConfig", ["preprocessing_data_file_path"])
 DataProcessingConfig = namedtuple("DataProcessingConfig", 
                                   ["processing_data_file_path", 

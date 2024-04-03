@@ -27,10 +27,8 @@ class Configuration:
             )
             dataset_file_name = data_ingestion_config_info[DATA_INGESTION_DATASET_FILE_NAME_KEY]
             dataset_file_path = os.path.join(data_ingestion_artifact_dir, dataset_file_name)
-            stock_symbol = data_ingestion_config_info[DATA_INGESTION_STOCK_SYMBOL]
             data_ingestion_config = DataIngestionConfig(
                 ingested_data_file_path=dataset_file_path,
-                stock_symbol = stock_symbol
             )
             return data_ingestion_config
         

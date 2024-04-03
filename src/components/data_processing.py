@@ -68,40 +68,113 @@ class DataProcessing:
             fig = go.Figure()
 
             fig.add_trace(go.Scatter(x=self.dataset['Date'], y=self.dataset['Close'], name="Close Price"))
-            fig.update_layout(title=f'{stock_name} Close Price', xaxis_title='Date', yaxis_title='Price (INR)', height=600, width=1350)
+            # Update layout to position legend inside the graph
+            fig.update_layout(
+                title=f"{stock_name} Close Price",
+                xaxis_title='Date',
+                yaxis_title='Price (INR)',
+                height=600,
+                width=1350,
+                legend=dict(
+                    x=0.02,
+                    y=0.98,
+                    traceorder="normal",
+                    font=dict(
+                        family="sans-serif",
+                        size=12,
+                        color="black"
+                    ),
+                    bgcolor="LightSteelBlue",
+                    bordercolor="Black",
+                    borderwidth=2
+                )
+            )
             fig.update_traces(hovertemplate='Date: %{x|%Y-%m-%d}<br>Price: %{y}')
             fig.update_layout(xaxis=dict(tickmode='array', tickvals=pd.date_range(start=date_range.min(), end=date_range.max(), freq='YS').tolist(), tickformat='%Y'))
             fig.write_html(self.processing_close_price_graph_file_path)
 
-            fig.add_trace(go.Scatter(x=self.dataset['Date'], y=self.dataset['Close'], name="Close Price"))
+
             fig.add_trace(go.Scatter(x=self.dataset['Date'], y=self.ma50, name="ma50"))
-            fig.update_layout(title=f'{stock_name} ma50', xaxis_title='Date', yaxis_title='Price (INR)', height=600, width=1350)
+            # Update layout to position legend inside the graph
+            fig.update_layout(
+                title=f"{stock_name} ma50",
+                xaxis_title='Date',
+                yaxis_title='Price (INR)',
+                height=600,
+                width=1350,
+                legend=dict(
+                    x=0.02,
+                    y=0.98,
+                    traceorder="normal",
+                    font=dict(
+                        family="sans-serif",
+                        size=12,
+                        color="black"
+                    ),
+                    bgcolor="LightSteelBlue",
+                    bordercolor="Black",
+                    borderwidth=2
+                )
+            )
             fig.update_traces(hovertemplate='Date: %{x|%Y-%m-%d}<br>Price: %{y}')
             fig.update_layout(xaxis=dict(tickmode='array', tickvals=pd.date_range(start=date_range.min(), end=date_range.max(), freq='YS').tolist(), tickformat='%Y'))
             fig.write_html(self.processing_50_ma_graph_file_path)
 
-            fig.add_trace(go.Scatter(x=self.dataset['Date'], y=self.dataset['Close'], name="Close Price"))
+
             fig.add_trace(go.Scatter(x=self.dataset['Date'], y=self.ma100, name="ma100"))
-            fig.update_layout(title=f'{stock_name} ma100', xaxis_title='Date', yaxis_title='Price (INR)', height=600, width=1350)
+            # Update layout to position legend inside the graph
+            fig.update_layout(
+                title=f"{stock_name} ma100",
+                xaxis_title='Date',
+                yaxis_title='Price (INR)',
+                height=600,
+                width=1350,
+                legend=dict(
+                    x=0.02,
+                    y=0.98,
+                    traceorder="normal",
+                    font=dict(
+                        family="sans-serif",
+                        size=12,
+                        color="black"
+                    ),
+                    bgcolor="LightSteelBlue",
+                    bordercolor="Black",
+                    borderwidth=2
+                )
+            )
             fig.update_traces(hovertemplate='Date: %{x|%Y-%m-%d}<br>Price: %{y}')
             fig.update_layout(xaxis=dict(tickmode='array', tickvals=pd.date_range(start=date_range.min(), end=date_range.max(), freq='YS').tolist(), tickformat='%Y'))
             fig.write_html(self.processing_100_ma_graph_file_path)
 
-            fig.add_trace(go.Scatter(x=self.dataset['Date'], y=self.dataset['Close'], name="Close Price"))
+
             fig.add_trace(go.Scatter(x=self.dataset['Date'], y=self.ma200, name="ma200"))
-            fig.update_layout(title=f'{stock_name} ma200', xaxis_title='Date', yaxis_title='Price (INR)', height=600, width=1350)
+            # Update layout to position legend inside the graph
+            fig.update_layout(
+                title=f"{stock_name} ma's Comparision",
+                xaxis_title='Date',
+                yaxis_title='Price (INR)',
+                height=600,
+                width=1350,
+                legend=dict(
+                    x=0.02,
+                    y=0.98,
+                    traceorder="normal",
+                    font=dict(
+                        family="sans-serif",
+                        size=12,
+                        color="black"
+                    ),
+                    bgcolor="LightSteelBlue",
+                    bordercolor="Black",
+                    borderwidth=2
+                )
+            )
+
             fig.update_traces(hovertemplate='Date: %{x|%Y-%m-%d}<br>Price: %{y}')
             fig.update_layout(xaxis=dict(tickmode='array', tickvals=pd.date_range(start=date_range.min(), end=date_range.max(), freq='YS').tolist(), tickformat='%Y'))
             fig.write_html(self.processing_200_ma_graph_file_path)
 
-            fig.add_trace(go.Scatter(x=self.dataset['Date'], y=self.dataset['Close'], name="Close Price"))
-            fig.add_trace(go.Scatter(x=self.dataset['Date'], y=self.ma50, name="ma50"))
-            fig.add_trace(go.Scatter(x=self.dataset['Date'], y=self.ma100, name="ma100"))
-            fig.add_trace(go.Scatter(x=self.dataset['Date'], y=self.ma200, name="ma200"))
-            fig.update_layout(title=f'{stock_name} "ma" Comparision', xaxis_title='Date', yaxis_title='Price (INR)', height=600, width=1350)
-            fig.update_traces(hovertemplate='Date: %{x|%Y-%m-%d}<br>Price: %{y}')
-            fig.update_layout(xaxis=dict(tickmode='array', tickvals=pd.date_range(start=date_range.min(), end=date_range.max(), freq='YS').tolist(), tickformat='%Y'))
-            fig.write_html(self.processing_50_100_200_ma_comp_graph_file_path)
 
         except Exception as e:
             print("Error:", e)
@@ -113,7 +186,7 @@ class DataProcessing:
             
             processed_data_file_path  = self.data_processing_config.processing_data_file_path
             processed_data_file_dir = os.path.dirname(processed_data_file_path)
-            os.makedirs(processed_data_file_dir)
+            os.makedirs(processed_data_file_dir, exist_ok=True)
 
             self.dataset['Date'] = pd.to_datetime(self.dataset['Date'])
             self.dataset = self.dataset[['Date', 'Close']]
@@ -133,7 +206,7 @@ class DataProcessing:
                 processing_50_ma_graph_file_path = self.processing_50_ma_graph_file_path,
                 processing_100_ma_graph_file_path = self.processing_100_ma_graph_file_path,
                 processing_200_ma_graph_file_path = self.processing_200_ma_graph_file_path,
-                processing_50_100_200_ma_comp_graph_file_path = self.processing_50_100_200_ma_comp_graph_file_path,
+                #processing_50_100_200_ma_comp_graph_file_path = self.processing_50_100_200_ma_comp_graph_file_path,
                 is_processed=is_processed,
                 message=message
             )

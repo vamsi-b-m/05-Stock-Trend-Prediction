@@ -6,8 +6,7 @@ DataProcessingArtifact = namedtuple("DataProcessingArtifact", ["processed_data_f
                                                                "processing_close_price_graph_file_path",
                                                                "processing_50_ma_graph_file_path",
                                                                "processing_100_ma_graph_file_path",
-                                                               "processing_200_ma_graph_file_path", 
-                                                               "processing_50_100_200_ma_comp_graph_file_path",
+                                                               "processing_200_ma_graph_file_path",
                                                                "is_processed", 
                                                                "message"])
 

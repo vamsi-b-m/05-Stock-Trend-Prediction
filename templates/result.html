@@ -12,11 +12,17 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            height: 200vh;
             background-color: cadetblue;
         }
         .container {
             text-align: center;
+        }
+        iframe {
+            width: 150%; /* Adjusted width */
+            height: 60vh;
+            border: none;
+            margin-left: -25%; /* Adjusted margin */
         }
         select {
             width: 250px; /* Set the width of the select dropdown */
@@ -37,7 +43,12 @@
                 {% endfor %}
             </select>
             <input type="submit" value="Submit">
-        </form>
+        </form>        
+        <!-- Display the graphs -->
+        <iframe src="../static/close_price.html" frameborder="0"></iframe>
+        <iframe src="../static/200ma.html" frameborder="0"></iframe>
+        <iframe src="../static/prediction_graph.html" frameborder="0"></iframe>
+        <!-- Add more iframe elements with the src attribute pointing to other HTML files -->
     </div>
 </body>
 </html>
