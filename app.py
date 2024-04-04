@@ -16,7 +16,7 @@ app = Flask(__name__)
 
 
 logger.info("Fetching the nifty_500 Stock Symbols")
-nifty_500 = ns.get_nifty500_with_ns()
+nifty_500 = sorted(ns.get_nifty500_with_ns())
 logger.info(f"Nifty 500 Stock Symbols are as follows : {nifty_500}")
 
 def copy_files(file_list, destination_dir):
